@@ -4,25 +4,27 @@ import { exec } from "child_process";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Health check
 app.get("/", (req, res) => {
-  res.send("✅ YT Audio API is running");
+  res.send("✅ YT Audio API running");
 });
 
-// 🎵 YouTube Audio API
 app.get("/ytaudio", (req, res) => {
-  const url = req.query.url;
+  let query = req.query.url || req.query.q;
 
-  if (!url) {
-    return res.json({ error: "Missing YouTube URL" });
+  if (!query) {
+    return res.json({ error: "Missing url or query" });
   }
 
-  const cmd = `yt-dlp -f bestaudio -g "${url}"`;
+  // 🔍 Agar link nahi hai to ytsearch use hoga
+  let target = query.includes("youtube.com") || query.includes("youtu.be")
+    ? query
+    : `ytsearch1:${query}`;
 
-  exec(cmd, (err, stdout, stderr) => {
+  const cmd = `yt-dlp -f bestaudio -g "${target}"`;
+
+  exec(cmd, (err, stdout) => {
     if (err || !stdout) {
-      console.error(stderr);
-      return res.status(500).json({ error: "Failed to fetch audio" });
+      return res.status(500).json({ error: "Audio fetch failed" });
     }
 
     res.json({
@@ -33,5 +35,5 @@ app.get("/ytaudio", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log("Server started");
 });
