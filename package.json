@@ -1,0 +1,16 @@
+{
+  "name": "yt-audio-api",
+  "version": "1.0.0",
+  "description": "YouTube Audio Download API",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
